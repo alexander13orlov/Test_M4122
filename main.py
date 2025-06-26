@@ -83,16 +83,18 @@ def main():
             send_and_expect_single(ser, b'\x55', b'\x55', 2, "Проверка связи")
 
         log("Отправка команды настройки.")
-        config_and_start = bytes.fromhex('6B64006D01')
-                
-        log("Повторная проверка связи (0x55 <-> 0x55)")
-        send_and_expect_single(ser, b'\x55', b'\x55', 2, "Повторная проверка связи")
-        log("Пауза для записи флеш")
-        time.sleep(2)
-        
-        config_and_start = bytes.fromhex('58')
-        log("Отправка команды настройки и запуска измерения.")
+        # config_and_start = bytes.fromhex('6B64006D0158') неправильный порядок
+        config_and_start = bytes.fromhex('6D016B640058') # правильный порядок, уставка напряжения в конце
         ser.write(config_and_start)
+                
+        # log("Повторная проверка связи (0x55 <-> 0x55)")
+        # send_and_expect_single(ser, b'\x55', b'\x55', 2, "Повторная проверка связи")
+        # log("Пауза для записи флеш")
+        # time.sleep(2)
+        
+        # config_and_start = bytes.fromhex('58')
+        # log("Отправка команды настройки и запуска измерения.")
+        # ser.write(config_and_start)
        
         log("Ожидание 0x5B окончания измерения. (ответ на запуск измерения 0x58)...")
         ser.timeout = 15
